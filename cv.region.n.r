@@ -13,11 +13,10 @@ library(hexbin)
 library(gridExtra)
 library(lattice)
 library(randomForest)
+library(sp)
 data(R_pal, package = "plotKML")
 log.flag <- 1
 PC.flag <-0
-arti.flag <- 1
-soil.flag <- 0
 a.dir <- "/home/shang009/big/"# dir of the project
 m.dir <- paste0(a.dir, "/soildepth")
 source(paste0(a.dir, "/soildepth/code/head/functions.r"))
@@ -36,6 +35,9 @@ for ( i in 1:length(fit.names) )
 }
 names(sub.sp) <- c("ca", "us", "eu", "as")
 
+
+arti.flag <- 1
+soil.flag <- 0
 #cross validation
 fit.names <- c("ca", "us", "eu", "as", "all")
 for ( i in 1:length(fit.names) )
@@ -43,3 +45,7 @@ for ( i in 1:length(fit.names) )
     fit.name <- fit.names[i]
     source(paste0(a.dir, "/soildepth/code/1km/cv.region.r"))
 }
+
+fit.name <- "all"
+soil.flag <- 1
+source(paste0(a.dir, "/soildepth/code/1km/cv.region.r"))

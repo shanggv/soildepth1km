@@ -1,12 +1,17 @@
-####
-# calculates the distance in the feature space of all geografic points
-# see Hidden extrapolation: (Montgomery, Peck, & Vining, 2001; page 109), and Brus, 2002
-# for a nice graph, the log of the normalized distance is calculated
+# title         : feature_space.r
+# purpose       : calculates the distance in the feature space of all geografic points;
+# reference     : Hidden extrapolation: (Montgomery, Peck, & Vining, 2001; page 109), and Brus, 2002
+# producer      : Prepared by W. Shangguan 
+# address       : In Wageningen, NL.
+# inputs        : pedicted tif by tiles 
+# outputs       :  pedicted tif files;
+# remarks 1     : Takes ca 1 hour for global ;
+# remarks 2     : for a nice graph, the log of the normalized distance is calculated
+
 rm(list = ls(all = TRUE))
 library(snowfall)
 
 PC.flag <- 0 # wheather use the PC as predictors
-fit.name <- "us" # c("all", "us", "eu", "as")
 a.dir <- "/home/shang009/big/"# dir of the project
 w.dir <- paste0(a.dir, "/worldgrids")
 m.dir <- paste0(a.dir, "/soildepth")
@@ -21,114 +26,62 @@ if(PC.flag == 1)
     rda.lst <- list.files(pattern=glob2rx("grid1kmo_T*.rda"), path = w.dir, recursive=TRUE, full.names=TRUE)
 }
 setwd(m.dir)
-load(paste0("sub.sp_", split.flag, "_", PC.flag, ".rda"))
-load(paste0("sub.sp.at_", split.flag, "_", PC.flag, ".rda"))
-
-#get h_max
-get_h_max <- function(obj, names_cov){
-    n_of_covars = length(names_cov)
-    n_of_observations = nrow(obj)
-    mn_X = as.matrix(obj[,names_cov])
-    mn_X = cbind(1,mn_X)
-    mn_XXinv <- solve(t(mn_X) %*% mn_X)
-    #h_max = max(diag(mn_X %*% mn_XXinv %*% t(mn_X)))  ##takes too much memory if n_of_observations are too big
-    # subset the matrix to avoid high consumption of memory, and do the same thing as the above line
-    tmp <- mn_X %*% mn_XXinv
-    tmp2 <-  t(mn_X)
-    len_sub <- 10000
-    n_sub <- ceiling(n_of_observations/len_sub)
-    h_max <- - 999
-    for(i in 1: n_sub)
-    {
-        i_start <- (i-1)*len_sub +1
-        if(i == n_sub) {
-            i_end <- n_of_observations
-        }else {
-            i_end <- i*len_sub
-        }
-        tmp3 <- tmp[i_start : i_end,] %*%  tmp2[ ,i_start : i_end]
-        tmp4 <- max(diag(tmp3))
-        #tmp4 <- sort(diag(tmp3), decreasing = TRUE)[4]
-        if(h_max < tmp4) h_max <- tmp4
-    }
-    ret <- list(h_max = h_max, mn_XXinv = mn_XXinv)
-    return(ret)
-}
-
-# get log(h_0/h_max)
-get_h_0 <- function(obj, h_max, mn_XXinv)
-{
-  if (!any(is.na(obj)))
-    {
-      v_x <- as.matrix(obj)
-      v_x <- c(1,v_x) # add leading one
-      # X_0 in my paper, x_0 in Montgomery
-      h_0 <- t(v_x) %*% mn_XXinv %*% (v_x)
-      # the distance of the point in feature space to the center of the ellipsoid
-      ret <- log(h_0 / h_max)
-      # the fraction of the distance of proposed covariate over the maximum distance that followed
-      # out of the calibration set
-      # to make nice maps, I calculated the logarithm; that's my own addition. So the border is 0
-      return(drop(ret))
-    }
-  else
-  {
-    return(NA)
-  }
-}
 
 
-check_feature_space <- function(obj, names_cov, h_max, mn_XXinv)
-{
-    n_of_obj <- dim(obj)[1]
-    #subset the obj to avoid high consumption of memory
-    len_sub <- 100000
-    n_sub <- ceiling(n_of_obj/len_sub)
-    log_h <- NULL
-    for(i in 1:n_sub)
-    {
-        i_start <- (i-1)*len_sub +1
-        if(i == n_sub){
-         i_end <- n_of_obj
-        }else{
-         i_end <- i*len_sub
-        }
-        log_h[i_start : i_end] <-
-            apply(obj[i_start : i_end, names_cov],
-            MARGIN=1, get_h_0, h_max = h_max, mn_XXinv = mn_XXinv)
-    }
-    flag <- which(log_h <= 0)
-    mask <- rep(NA, times = length(log_h))
-    mask[flag] <- 1
-    ###percentage of points which are not in the calibration feature space
-    n_of_in <- sum(!is.na(mask))
-    frac <- 1 - n_of_in / n_of_obj
-    ret <- list(log_h = log_h, mask = mask, frac = frac, n_in = n_of_in, n_all = n_of_obj)
-    return(ret)
-}
-
+fit.name <- "all" # c("all", "us", "eu", "as")
+load(paste0("./profs/subs/subs.sp_", PC.flag, "_", fit.name,".rda"))
+load(paste0("./profs/subs/suba.sp_", PC.flag, "_", fit.name,".rda"))
 ###only for continuous variables
 vs_covars = pr.lst[1:19]
-tmp <- rbind(subs.sp[[1]]@data, subs.sp.at[[1]]@data)
+tmp <-subs.sp[[1]]@data
+#tmp<- subset(tmp, runif(dim(tmp)[1])>0.999)
 tmp <- get_h_max(tmp, vs_covars)
 hmax <- tmp$h_max
 hmax
-#0.009990788 max
-#0.009987938 2nd max
-#0.008368055 3rd max
-#0.006742014 4th max
+#0.02501247 max
 mn_XXinv <- tmp$mn_XXinv
 
 #####check the validation subset's feature space
-val.p <- rbind(subset(sub.sp, !(sub.sp$SOURCEID %in% subs.sp[[1]]$SOURCEID) ),
-        subset(sub.sp.at, !(sub.sp.at$SOURCEID %in% subs.sp.at[[1]]$SOURCEID)))
-#val.p <- subset(val.p, as.integer(val.p$SOURCEID) <1000)
+val.p <- subset(suba.sp, !(suba.sp$SOURCEID %in% subs.sp[[1]]$SOURCEID) )
+obj<-subset(val.p@data, runif(length(val.p))>0.99999)
 tmp2 <- check_feature_space(val.p@data, vs_covars, hmax, mn_XXinv)
+
 val.p$log_h <- tmp2$log_h
 val.p$mask <- tmp2$mask
 print(tmp2$frac)
-#0.0055
-rm(subs.sp, subs.sp.at,sub.sp, sub.sp.at)
+#0
+rm(subs.sp, suba.sp)
+
+
+
+
+fit.name <- "us" # c("all", "us", "eu", "as")
+load(paste0("./profs/subs/subs.sp_", PC.flag, "_", fit.name,".rda"))
+load(paste0("./profs/subs/suba.sp_", PC.flag, "_", fit.name,".rda"))
+###only for continuous variables
+vs_covars = pr.lst[1:19]
+#tmp <- get_h_max(subs.sp[[1]]@data, vs_covars)
+tmp <- get_h_max(subs.sp[[1]]@data, vs_covars)
+hmax <- tmp$h_max
+hmax
+#0.02007895 max
+mn_XXinv <- tmp$mn_XXinv
+
+#####check the validation subset's feature space
+val.p <- subset(suba.sp, !(suba.sp$SOURCEID %in% subs.sp[[1]]$SOURCEID) )
+tmp2 <- check_feature_space(val.p@data, vs_covars, hmax, mn_XXinv)
+#tmp2 <- check_feature_space(val.p@data[1,], vs_covars, hmax, mn_XXinv)
+#val.p$log_h <- tmp2$log_h
+#val.p$mask <- tmp2$mask
+print(tmp2$frac)
+#0
+fit.name <- "all" # c("all", "us", "eu", "as")
+load(paste0("./profs/subs/suba.sp_", PC.flag, "_", fit.name,".rda"))
+val.p <- subset(suba.sp, !(suba.sp$SOURCEID %in% subs.sp[[1]]$SOURCEID) )
+tmp2 <- check_feature_space(val.p@data, vs_covars, hmax, mn_XXinv)
+print(tmp2$frac)
+#0.004721209
+rm(subs.sp, suba.sp)
 #####check the prediction's feature space
 
 

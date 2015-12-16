@@ -83,8 +83,9 @@ names(cv.lst) <- tvar.lst
 j<-1
 ## Run cross-validation and var.test and write the results to a table
 ## Subset to sub.N samples to speed things up!
+
 for(j in 1:length(tbl$ATTRIBUTE_LABEL)){
-#for(j in 1:3){
+#for(j in 1:1){
    tvar <- paste(tbl$ATTRIBUTE_LABEL[j])
    #merge
    if(tvar == "SAPICM2"){

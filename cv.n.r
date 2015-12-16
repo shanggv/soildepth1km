@@ -1,4 +1,4 @@
-# title         : cross.validation.R
+# title         : cv.n.r
 # purpose       : cross validation;
 # reference     :
 # producer      : Prepared by W. Shangguan 
@@ -8,7 +8,6 @@
 # remarks 1     : Takes ca 2.2 hrs(1.9 for BDRICM, 0.3 for BDRLOG) to run with 5 cpus for randomforest in the defualt setting in use 
 # remarks 2     : Computing time depends on the setting of *.flag
 # remarks 3     : SAPICM will be identifical if the PC.flag is the same
-
 
 rm(list = ls(all = TRUE))
 ## Cross-validation of models:
@@ -84,15 +83,14 @@ fit.name <- "all"
 #source(paste0(a.dir, "soildepth/code/1km/cross.validation.r"))
 
 #### final run  to be chosen ? 
-PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
-arti.flag <- 1  #1: add artificial points; 0: not
-soil.flag <- 1 # 0: without soil profiles; 1: add soil profiles
-m.flag <- 0  # 0: with only randomfores; 1: with all models 
-source(paste0(a.dir, "soildepth/code/1km/cross.validation.r"))
+#PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
+#arti.flag <- 1  #1: add artificial points; 0: not
+#soil.flag <- 1 # 0: without soil profiles; 1: add soil profiles
+#m.flag <- 0  # 0: with only randomfores; 1: with all models 
+#source(paste0(a.dir, "soildepth/code/1km/cross.validation.r"))
 #
 
 #including cv.lst,tbl,c_m
-
 fit.name <- "us" 
 #defualt
 PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
@@ -138,7 +136,7 @@ load(paste0("./cv/cv_p", PC.flag, "_a", arti.flag, "_s", soil.flag, fit.name, ".
 cv.lst4 <- cv.lst
 tbl4 <- tbl
 c_m4 <- c_m 
-rm(cv.lst,tbl,c_m)
+
 
 ####arti.flag test
 PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
@@ -146,7 +144,7 @@ arti.flag <- 1  #1: add artificial points; 0: not
 soil.flag <- 0 # 0: without soil profiles; 1: add soil profiles
 m.flag <- 0  # 0: with only randomfores; 1: with all models 
 load(paste0("./cv/cv_p", PC.flag, "_a", arti.flag, "_s", soil.flag, fit.name, ".RData"))
-source(paste0(a.dir, "soildepth/code/1km/cv.plot.r"))
+
 cv.lst3 <- cv.lst
 tbl3 <- tbl
 c_m3 <- c_m 
@@ -157,11 +155,11 @@ arti.flag <- 1  #1: add artificial points; 0: not
 soil.flag <- 1 # 0: without soil profiles; 1: add soil profiles
 m.flag <- 0  # 0: with only randomfores; 1: with all models 
 load(paste0("./cv/cv_p", PC.flag, "_a", arti.flag, "_s", soil.flag, fit.name, ".RData"))
-source(paste0(a.dir, "soildepth/code/1km/cv.plot.r"))
 cv.lst5 <- cv.lst
 tbl5 <- tbl
 c_m5 <- c_m
-
+source(paste0(a.dir, "soildepth/code/1km/cv.plot.r"))
+rm(cv.lst,tbl,c_m)
 ####compare beween different settings
 tblc <- data.frame(ATTRIBUTE_LABEL = c("BDRICM", "SAPICM2"))
 tblc$var.test.Hpc <- NA
@@ -170,6 +168,7 @@ tblc$var.test.Hat <- NA
 tblc$t.test.Hat <- NA
 tblc$var.test.Hs <- NA
 tblc$t.test.Hs <- NA
+
 ####compare
 for(j in 1:2)
 {

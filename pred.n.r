@@ -1,11 +1,11 @@
-# title         : prediction.R
+# title         : prediction.r
 # purpose       : predict the soil depth;
 # reference     :
 # producer      : Prepared by W. Shangguan 
 # address       : In Wageningen, NL.
 # inputs        : WorldGrids layers, prediction models
 # outputs       :  pedicted tif files;
-# remarks 1     : Takes ca 1 hour for global;
+# remarks 1     : Takes ca 3 hour for global with 6 cpus on donkey, 10 hour for en.num == 1:10;
 
 rm(list = ls(all = TRUE))
 library(GSIF)
@@ -35,12 +35,14 @@ tilestest <- c( "T212","T213", "T460", "T461", "T524", "T560","T441","T442", "T4
 
 
 #defualt
-#PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
-#arti.flag <- 1  #1: add artificial points; 0: not
-#fit.name <- "us" # c("eu", "as", "us", "ca", "all")
-#soil.flag <-0 # 0: without soil profiles; 1: add soil profiles
-#en.num <- 1   #number of ensemble prediction
-##source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
+PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
+arti.flag <- 1  #1: add artificial points; 0: not
+fit.name <- "us" # c("eu", "as", "us", "ca", "all")
+soil.flag <-0 # 0: without soil profiles; 1: add soil profiles
+en.num <- 1   #number of ensemble prediction
+tilestest <- "all"
+kml.flag <- 0
+source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
 ######PC.flag test
 #PC.flag <- 1
 #source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
@@ -50,7 +52,11 @@ tilestest <- c( "T212","T213", "T460", "T461", "T524", "T560","T441","T442", "T4
 #arti.flag <- 1  #1: add artificial points; 0: not
 #fit.name <- "all" # c("eu", "as", "us", "ca", "all")
 #soil.flag <-0 # 0: without soil profiles; 1: add soil profiles
+#tilestest <- "all"
+#kml.flag <- 0
 #en.num <- 1   #number of ensemble prediction
+#source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
+#en.num <- 1:10   #number of ensemble prediction
 #source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
 
 #####defualt 3
@@ -80,15 +86,17 @@ tilestest <- c( "T212","T213", "T460", "T461", "T524", "T560","T441","T442", "T4
 
 
 #####predict all
-PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
-arti.flag <- 1  #1: add artificial points; 0: not
-fit.name <- "all" # c("eu", "as", "us", "ca", "all")
-soil.flag <- 1 # 0: without soil profiles; 1: add soil profiles
-kml.flag <- 0 # 0:not produce kml, 1: produce kml for predition and covariates
-en.num <- 1
-#en.num <- 1:10   #number of ensemble prediction
+#PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
+#arti.flag <- 1  #1: add artificial points; 0: not
+#fit.name <- "all" # c("eu", "as", "us", "ca", "all")
+#soil.flag <- 1 # 0: without soil profiles; 1: add soil profiles
+#kml.flag <- 0 # 0:not produce kml, 1: produce kml for predition and covariates
+#en.num <- 1 #number of ensemble prediction
 #tilestest <- "all"
-source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
+##source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
+#en.num <- 1:10   #number of ensemble prediction
+#source(paste0(a.dir, "/soildepth/code/1km/prediction.r"))
+
 
 
 # get tiles for regions

@@ -32,7 +32,7 @@ setwd(wdir)
     "LAMMOD3a", "LASMOD3a", "LITUSG3a",  "GCPIIA3a", "OPISRE3a",  "GTDHYS3a",
     "ELFUSG3a", paste("PX", 1:4, "WCL3a", sep=""), 
     paste("G0", 1:9, "ESA3a", sep=""),
-    paste("G", 10:22, "ESA3a", sep=""), "L11IGB3a", "L12IGB3a")
+    paste("G", 10:22, "ESA3a", sep=""), "L11IGB3a")
 
 
 ## download and unzip:

@@ -5,7 +5,7 @@
 # address       : In Wageningen, NL.
 # inputs        : WorldGrids layers, prediction models
 # outputs       :  pedicted tif files;
-# remarks 1     : Takes ca  1 min for 1 tile;
+# remarks 1     : Takes ca  1-3 min for 1 tile, ca 6-18min for en.num == 1:10;
 
 load(paste0(a.dir, "/worldgrids/worldgrids.spc.rda"))
 if(PC.flag == 1)
@@ -37,16 +37,17 @@ wrapper.predict_BDR <- function(i){
   if(!file.exists(out0)){
   # if(1){
     xm <- 0
-    for(j in 1 : en.num)
+    for(j in en.num)
     {
         load(paste0("./model/m_BDRLOG_p",PC.flag, "_a", arti.flag, "_s", soil.flag, "_", fit.name, "_", j,".rda")) 
         cnames <- dimnames(m_BDRLOG[["importance"]])[[1]]      
         try(xm <- xm +(predict(m_BDRLOG, m@data[,cnames], na.action=na.pass, type = "vote")[,2]) )
     }
     if(!class(.Last.value)[1]=="try-error"){
-      m@data[,"BDRLOG"] <- as.integer(xm / en.num * 100)
+      m@data[,"BDRLOG"] <- as.integer(xm / length(en.num) * 100)
       writeGDAL(m["BDRLOG"], out0, type="Byte", mvFlag=255)
-      rm(m_BDRLOG)
+      m$BDRLOG <- NULL
+      rm(m_BDRLOG,xm)
       gc()
     }else {
       warning(paste("Failed to compute 'BDRLOG' for tile": i))
@@ -55,16 +56,17 @@ wrapper.predict_BDR <- function(i){
   if(!file.exists(out1)){
   #if(1){
     dm <- 0
-    for(j in 1 : en.num)
+    for(j in en.num)
     {
         load(paste0("./model/m_BDRICM_p",PC.flag, "_a", arti.flag, "_s", soil.flag, "_", fit.name, "_", j, ".rda"))
         cnames <- dimnames(m_BDRICM[["importance"]])[[1]]
         try( dm <- dm + predict(m_BDRICM, m@data[,cnames], na.action=na.pass) )
     }
       if(!class(.Last.value)[1]=="try-error"){
-        m@data[,"BDRICM"] <- as.integer(expm1(dm/en.num))
+        m@data[,"BDRICM"] <- as.integer(expm1(dm/length(en.num)))
         writeGDAL(m["BDRICM"], out1, type = "Int32")
-        rm(m_BDRICM)
+        m$BDRICM<- NULL
+        rm(m_BDRICM,dm)
         gc()
     }else{
       warning(paste("Failed to compute 'BDRICM' for tile": i))
@@ -89,7 +91,7 @@ if(tilestest == "all")
 {
     nRuns <- 1:length(rda.lst)
 }else nRuns <- sapply (tilestest, function(x) grep(pattern = x, rda.lst))
-sfInit(parallel=TRUE, cpus = 10, slaveOutfile="~/errorwg.log")
+sfInit(parallel=TRUE, cpus = 6, slaveOutfile="~/errorwg.log")
 sfLibrary(rgdal)
 sfLibrary(randomForest)
 sfLibrary(randomForestSRC)

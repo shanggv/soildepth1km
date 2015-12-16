@@ -69,7 +69,7 @@ slppoint <- subset(slppoint, slppoint$SLPSRT3a > (50*255/90))
 slppoint$BDRICM <- as.integer(round(runif(length(slppoint), 0, 20)))
 atpoint <- rbind(outpoint, slppoint)
 atpoint$SLPSRT3a <- NULL
-
+save(atpoint,file="./profs/atpoint.rda")
 
 load(paste0(a.dir, "/worldgrids/worldgrids.spc.rda"))
 for(PC.flag in 0:1)

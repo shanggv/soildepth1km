@@ -38,9 +38,9 @@ for(i in 1:len){
     }
     plotList[[i]] <- hexbinplot(m$prelog~ m$ylog,
         colramp=colorRampPalette(R_pal[["bpy_colors"]]), main=paste0(fit.name, "\n(fitting)"),
-        xlab="measured", ylab="predicted",
+        xlab="measured", ylab="predicted", cex.title = "1",
         type="g", lwd=1, lcex=8, inner=.2, cex.labels=.8,
-        xlim=range(m$ylog), ylim=range(m$prelog),
+        xlim=range(m$ylog), ylim=range(m$ylog),
         asp=1, xbins=25, density=40, panel=pfun)
     # r2 value OOB
     r2.oob[[i]] <- round(m$rsq[length(m$rsq)], digits=3)
@@ -118,9 +118,9 @@ for(i in 1:1){
         # correlation plot
         plotList[[j+1]] <- hexbinplot(val.d$plog~ val.d$ylog,
              colramp=colorRampPalette(R_pal[["bpy_colors"]]), main=paste0(val.r[[j]], "\n(validation)"),
-             xlab="measured", ylab="predicted",
+             xlab="measured", ylab="predicted", cex.title = "1",
              type="g", lwd=1, lcex=8, inner=.2, cex.labels=.8,
-             xlim=range(val.d$plog), ylim=range(val.d$ylog),
+             xlim=range(val.d$ylog), ylim=range(val.d$ylog),
              asp=1, xbins=25, density=40, panel=pfun)
     }
     names(r2.v) <- names(me.v) <- names(rmse.v) <- names(val.c) <-val.r

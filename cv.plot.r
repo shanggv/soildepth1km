@@ -34,7 +34,7 @@ for(j in 1:2){
              colramp=colorRampPalette(R_pal[["bpy_colors"]]), main = tvar,
              xlab="measured", ylab="predicted",
              type="g", lwd=1, lcex=8, inner=.2, cex.labels=.8,
-             xlim=range(cv.lst[[j]]$measlog), ylim=range(cv.lst[[j]]$rf.predlog),
+             xlim=range(cv.lst[[j]]$measlog), ylim=range(cv.lst[[j]]$rf.measlog),
              asp=1, xbins=25, density=40, panel=pfun)
 }
 #plot(plotList[[1]])

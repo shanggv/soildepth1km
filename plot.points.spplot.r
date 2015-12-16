@@ -5,7 +5,7 @@
     na3 <- subset(tmp3, tmp3@coords[,1]>bbox[1,1] & tmp3@coords[,1]<bbox[1,2] 
         & tmp3@coords[,2]>bbox[2,1] & tmp3@coords[,2]<bbox[2,2])
     png(file = paste0("./pics/", tname, "_soil.png"), width = 730, height = 480, units = "px")
-    spplot(na1["BDRICM"], xlim = na2@bbox[1,], ylim = na2@bbox[2,], colorkey = list(
+    spplot(na1["BDRICM"], xlim = na1@bbox[1,], ylim = na1@bbox[2,], colorkey = list(
     	right = list( 
     		fun = draw.colorkey, 
     		args = list(
@@ -21,7 +21,7 @@
     		)
     	)
     ))
-    plot(country, col="darkgrey")
+
     
     dev.off()
     

@@ -17,7 +17,7 @@ library(raster)
 library(lattice)
 library(maptools) 
 #global
-dir <- "E:/data/soildata/depth/points/codegsifb"
+dir <- "E:/data/soildata/depth/code"
 setwd(dir)
 source("./head/functions.r")
 
@@ -25,36 +25,37 @@ source("./head/functions.r")
 ## WELL DATA (DRILLINGS)
 ##############################################
 ## Wells data compiled by Wei:
-us <- read.csv("../profs/well/wells_us.txt", sep="\t")
+us <- read.csv("../points/profs/well/wells_us.txt", sep="\t")
 us$BDRICM <- us$D_BR*100
 names(us)[2:3] <- c("LONWGS84", "LATWGS84")
 us$SOURCEID <- paste0("USWELL_", us$Source, "_", rownames(us))
+us <- us[as.character(us$SOURCEID )< "USWELL_2_1280"  | as.character(us$SOURCEID) > "USWELL_2_1808" , ]
 EDA(log1p(us$BDRICM))
-dev.copy(png,"../pic/EDA/EDA_well_us.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_well_us.png", width = 730, height = 480, units = "px")
 dev.off()
 
-ca <- read.csv("../profs/well/wells_ca.txt", sep="\t")
+ca <- read.csv("../points/profs/well/wells_ca.txt", sep="\t")
 ca$BDRICM <- ca$D_BR*100
 names(ca)[2:3] <- c("LONWGS84", "LATWGS84")
 ca$SOURCEID <- paste0("CAWELL_", ca$Source, "_", rownames(ca))
 EDA(log1p(ca$BDRICM))
-dev.copy(png,"../pic/EDA/EDA_well_ca.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_well_ca.png", width = 730, height = 480, units = "px")
 dev.off()
 
-as <- read.csv("../profs/well/wells_as2.txt", sep="\t")
+as <- read.csv("../points/profs/well/wells_as2.txt", sep="\t")
 as$BDRICM <- as$D_BR*100
 names(as)[2:3] <- c("LONWGS84", "LATWGS84")
 as$SOURCEID <- paste0("ASWELL_", rownames(as))
 EDA(log1p(as$BDRICM))
-dev.copy(png,"../pic/EDA/EDA_well_as.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_well_as.png", width = 730, height = 480, units = "px")
 dev.off()
 
-eu <- read.csv("../profs/well/wells_eu.txt", sep="\t")
+eu <- read.csv("../points/profs/well/wells_eu.txt", sep="\t")
 eu$BDRICM <- eu$D_BR*100
 names(eu)[2:3] <- c("LONWGS84", "LATWGS84")
 eu$SOURCEID <- paste0("EUWELL_", rownames(eu))
 EDA(log1p(eu$BDRICM))
-dev.copy(png,"../pic/EDA/EDA_well_eu.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_well_eu.png", width = 730, height = 480, units = "px")
 dev.off()
 
 ####combin wells
@@ -73,27 +74,27 @@ coordinates(wells.depth) <- ~ LONWGS84+LATWGS84
 proj4string(wells.depth) <- CRS("+proj=longlat +datum=WGS84")     
 #writePointsShape(wells.depth, "as")
 wells.depth$BDRICM <- as.integer(wells.depth$BDRICM)
-save(wells.depth, file="../profs/wells.depth.rda")
-#load("../profs/wells.depth.rda")
+save(wells.depth, file="../points/profs/wells.depth.rda")
+#load("../points/profs/wells.depth.rda")
 
 ##############################################
 ## SOIL PROFILE DATA
 ##############################################
 ###Soil profiles are prepared in the fold of profiles for SoilGrids1km
-load("../profs/sprofs.depth.rda")
+load("../points/profs/sprofs.depth.rda")
 tmp <- sprofs.depth$BDRICM[!is.na(sprofs.depth$BDRICM)]
 EDA(log1p(tmp))
-dev.copy(png,"../pic/EDA/EDA_soil_BDR.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_soil_BDR.png", width = 730, height = 480, units = "px")
 dev.off()
 
 tmp <- sprofs.depth$SAPICM[!is.na(sprofs.depth$SAPICM)]
 EDA(log1p(tmp))
-dev.copy(png,"../pic/EDA/EDA_soil_SAP.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_soil_SAP.png", width = 730, height = 480, units = "px")
 dev.off()
 
 tmp <- sprofs.depth$SAPICM2[!is.na(sprofs.depth$SAPICM2)]
 EDA(log1p(tmp))
-dev.copy(png,"../pic/EDA/EDA_soil_SAP2.png", width = 730, height = 480, units = "px")
+dev.copy(png,"../points/pic/EDA/EDA_soil_SAP2.png", width = 730, height = 480, units = "px")
 dev.off()
 
 
@@ -109,6 +110,6 @@ grd <- vect2rast(wells.depth["BDRICM"], cell.size=.1)#, bbox=na.bbox)
 #plot(log1p(raster(grd)), col=SAGA_pal[[1]])
 grd.pol <- grid2poly(as(grd, "SpatialPixelsDataFrame"))
 kml(grd.pol, colour=log1p(BDRICM), colour_scale=SAGA_pal[[1]],z.lim = c(3,10))
-save.image("../profs/prepare.RData")
+save.image("../points/profs/prepare.RData")
 ## end of script;
 

@@ -17,6 +17,7 @@ m.dir <- paste0(a.dir, "/soildepth")
 setwd(m.dir)
 source(paste0(a.dir, "/soildepth/code/head/functions.r"))
 
+
 PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
 arti.flag <- 1  #1: add artificial points; 0: not
 fit.name <- "all" # c("eu", "as", "us", "ca", "all")

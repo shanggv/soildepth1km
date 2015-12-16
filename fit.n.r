@@ -18,7 +18,7 @@ library(raster)
 library(snowfall)
 
 # global define
-#gdal.dir <-  "/home/src"
+#gdal.dir <-  "/usr/local/bin"
 #gdal_setInstallation(search_path=gdal.dir, rescan=TRUE)
 # directory
 a.dir <- "/data/shang009/big"# dir of the project
@@ -69,6 +69,7 @@ options(rf.cores=10, mc.cores=10)
 #####PC.flag test
 #PC.flag <- 1
 #source(paste0(a.dir, "/soildepth/code/1km/fit_models.r"))
+
 #default 2
 #PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
 #arti.flag <- 1  #1: add artificial points; 0: not
@@ -79,19 +80,19 @@ options(rf.cores=10, mc.cores=10)
 
 
 ####predict  with this ??
-refit <- TRUE #only one time
-PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
-arti.flag <- 1  #1: add artificial points; 0: not
-fit.name <- "all" # c("eu", "as", "us", "ca", "all")
-soil.flag <- 1 # 0: without soil profiles; 1: add soil profiles
+#refit <- TRUE #only one time
+#PC.flag <- 0 # 0: not use the PC as predictors; 1: not use
+#arti.flag <- 1  #1: add artificial points; 0: not
+#fit.name <- "all" # c("eu", "as", "us", "ca", "all")
+#soil.flag <- 0 # 0: without soil profiles; 1: add soil profiles
 #en.num <- 1
 #source(paste0(a.dir, "/soildepth/code/1km/fit_models.r"))
-refit <- FALSE #only one time
-###en.num test
-for( en.num in 6:10)   #number of ensemble prediction
-{
-    source(paste0(a.dir, "/soildepth/code/1km/fit_models.r"))
-}
+#refit <- FALSE #only one time
+####en.num test
+#for( en.num in 2:10)   #number of ensemble prediction
+#{
+#    source(paste0(a.dir, "/soildepth/code/1km/fit_models.r"))
+#}
 
 
 ####soil.flag test

@@ -72,7 +72,7 @@ s_us_ca <- function(sp)
     ov <- over(sp[[3]], country)
     sp[[3]]$country <- ov
     #without alaska
-    sp[[4]] <- subset(sp[[3]], sp[[3]]$country==217 & sp[[3]]$LATWGS84 <55)
+    sp[[4]] <- subset(sp[[3]], sp[[3]]$country==217 )
     sp[[5]] <- subset(sp[[3]], sp[[3]]$country==38)
     sp[[3]] <- NULL
     names(sp) <- c("eu", "as", "us", "ca")
@@ -98,6 +98,10 @@ for(i in 1:length(sub.sp))
     save(subs.sp, file=paste0("./profs/subs/subs.sp_", PC.flag, "_", names(sub.sp)[i], ".rda")) 
     suba.sp <- rbind(sub.sp[[i]],sub.sp.at[[i]])
     suba.sp$SOURCEID <- as.character(suba.sp$SOURCEID) # to avoid factor taking big storage
+       suba.sp$source <- sapply(suba.sp$SOURCEID, USE.NAMES = F, function(x) 
+        {
+            y <- as.integer(strsplit(x, "_")[[1]][2])       
+        })
     save(suba.sp, file=paste0("./profs/subs/suba.sp_", PC.flag, "_", names(sub.sp)[i], ".rda"))      
 }
 

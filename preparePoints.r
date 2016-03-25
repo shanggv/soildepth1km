@@ -29,7 +29,9 @@ us <- read.csv("../points/profs/well/wells_us.txt", sep="\t")
 us$BDRICM <- us$D_BR*100
 names(us)[2:3] <- c("LONWGS84", "LATWGS84")
 us$SOURCEID <- paste0("USWELL_", us$Source, "_", rownames(us))
+#get rid of arizona
 us <- us[as.character(us$SOURCEID )< "USWELL_2_1280"  | as.character(us$SOURCEID) > "USWELL_2_1808" , ]
+us <- us[!is.na(us$BDRICM)&!is.na(us$LONWGS84)&!is.na(us$LATWGS84), ]
 EDA(log1p(us$BDRICM))
 dev.copy(png,"../points/pic/EDA/EDA_well_us.png", width = 730, height = 480, units = "px")
 dev.off()
@@ -38,6 +40,7 @@ ca <- read.csv("../points/profs/well/wells_ca.txt", sep="\t")
 ca$BDRICM <- ca$D_BR*100
 names(ca)[2:3] <- c("LONWGS84", "LATWGS84")
 ca$SOURCEID <- paste0("CAWELL_", ca$Source, "_", rownames(ca))
+ca <- ca[!is.na(ca$BDRICM)&!is.na(ca$LONWGS84)&!is.na(ca$LATWGS84), ]
 EDA(log1p(ca$BDRICM))
 dev.copy(png,"../points/pic/EDA/EDA_well_ca.png", width = 730, height = 480, units = "px")
 dev.off()
@@ -46,6 +49,7 @@ as <- read.csv("../points/profs/well/wells_as2.txt", sep="\t")
 as$BDRICM <- as$D_BR*100
 names(as)[2:3] <- c("LONWGS84", "LATWGS84")
 as$SOURCEID <- paste0("ASWELL_", rownames(as))
+as <- as[!is.na(as$BDRICM)&!is.na(as$LONWGS84)&!is.na(as$LATWGS84), ]
 EDA(log1p(as$BDRICM))
 dev.copy(png,"../points/pic/EDA/EDA_well_as.png", width = 730, height = 480, units = "px")
 dev.off()
@@ -54,8 +58,38 @@ eu <- read.csv("../points/profs/well/wells_eu.txt", sep="\t")
 eu$BDRICM <- eu$D_BR*100
 names(eu)[2:3] <- c("LONWGS84", "LATWGS84")
 eu$SOURCEID <- paste0("EUWELL_", rownames(eu))
+eu <- eu[!is.na(eu$BDRICM)&!is.na(eu$LONWGS84)&!is.na(eu$LATWGS84), ]
 EDA(log1p(eu$BDRICM))
 dev.copy(png,"../points/pic/EDA/EDA_well_eu.png", width = 730, height = 480, units = "px")
+dev.off()
+
+
+br <- read.csv("../points/profs/well/wells_br.txt", sep="\t")
+br$BDRICM <- br$D_BR*100
+names(br)[2:3] <- c("LONWGS84", "LATWGS84")
+br$SOURCEID <- paste0("BRWELL_", rownames(br))
+br <- br[!is.na(br$BDRICM)&!is.na(br$LONWGS84)&!is.na(br$LATWGS84), ]
+EDA(log1p(br$BDRICM))
+dev.copy(png,"../points/pic/EDA/EDA_well_br.png", width = 730, height = 480, units = "px")
+dev.off()
+
+pr <- read.csv("../points/profs/well/wells_pr.txt", sep="\t")
+pr$BDRICM <- pr$D_BR*100
+names(pr)[2:3] <- c("LONWGS84", "LATWGS84")
+pr$SOURCEID <- paste0("PRWELL_", rownames(pr))
+pr <- pr[!is.na(pr$BDRICM)&!is.na(pr$LONWGS84)&!is.na(pr$LATWGS84), ]
+EDA(log1p(pr$BDRICM))
+dev.copy(png,"../points/pic/EDA/EDA_well_pr.png", width = 730, height = 480, units = "px")
+dev.off()
+
+
+cn <- read.csv("../points/profs/well/wells_cn.txt", sep="\t")
+cn$BDRICM <- cn$D_BR*100
+names(cn)[2:3] <- c("LONWGS84", "LATWGS84")
+cn$SOURCEID <- paste0("CNWELL_", rownames(cn))
+cn <- cn[!is.na(cn$BDRICM)&!is.na(cn$LONWGS84)&!is.na(cn$LATWGS84), ]
+EDA(log1p(cn$BDRICM))
+dev.copy(png,"../points/pic/EDA/EDA_well_cn.png", width = 730, height = 480, units = "px")
 dev.off()
 
 ####combin wells
@@ -63,7 +97,11 @@ wells <- do.call(rbind, list(
         ca[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")], 
         us[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")],
         as[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")],
-        eu[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")]))
+        eu[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")],
+        br[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")],
+        pr[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")],
+        cn[, c("SOURCEID","LONWGS84","LATWGS84","BDRICM")]))
+rm(ca,us,as,eu,br,pr,cn)
 wells <- wells[complete.cases(wells), ]
 EDA(log1p(wells$BDRICM))
 dev.copy(png,"../pic/EDA/EDA_well_all.png", width = 730, height = 480, units = "px")

@@ -2,16 +2,16 @@ rm(list = ls(all = TRUE))
 
 
 #define global, change if needed
-dir_f <- "E:\\data\\soildata\\depth\\points\\codegsifb\\head\\"
+dir_f <- "E:\\data\\soildata\\depth\\code\\head\\"
 source(paste(dir_f, "functions.r", sep = ""))
-dir1  <- "E:\\data\\soildata\\depth\\points\\russia\\"
+dir1  <- "E:\\data\\soildata\\depth\\points\\soil\\russia\\"
 c_names  <- c("Source", "Long", "Lat", "D_BR", "D_water", "D_well", "Accu_xy") 
 setwd(dir1)
 dirs   <- shell("dir * /B", intern = T)
 states <- cbind(1:length(dirs), dirs)
 colnames(states) <- c("s_code", "states")
 states
-dir_out <- "E:\\data\\soildata\\depth\\points\\"#      s_code states        
+dir_out <- "E:\\data\\soildata\\depth\\points\\profs\\well\\"#      s_code states        
 
 
 

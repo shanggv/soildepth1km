@@ -144,4 +144,14 @@ rec.lst[[s_n]] <- form_rec(tmp, s_n)
 print_0(rec.lst[[s_n]][, 4])
 #"0 out of 26 is 0"
 del_unzip()
+tmp<- rec.lst[[s_n]]
+write.table(tmp, paste(dir_out, "wells_pr.txt", sep = ""), 
+            row.names = FALSE, sep = "\t")
+
+
+library(sp)
+coordinates(tmp) <- ~Long+Lat
+tmp$tmp<- log1p(tmp$D_BR)
+spplot(tmp["tmp"])
+
 
